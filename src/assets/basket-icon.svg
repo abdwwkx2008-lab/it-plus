@@ -1,0 +1,7 @@
+<svg viewBox="0 0 24.011 23" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24.010986" height="23.000000" fill="none" customFrame="#000000">
+	<g id="icon basket">
+		<path id="Vector" d="M9 22C8.44771 22 8 21.5523 8 21C8 20.4477 8.44771 20 9 20C9.55228 20 10 20.4477 10 21C10 21.5523 9.55228 22 9 22Z" stroke="rgb(69.2617,69.2617,69.2617)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+		<path id="Vector" d="M19 22C18.4477 22 18 21.5523 18 21C18 20.4477 18.4477 20 19 20C19.5523 20 20 20.4477 20 21C20 21.5523 19.5523 22 19 22Z" stroke="rgb(69.2617,69.2617,69.2617)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+		<path id="Vector" d="M1 1L5 1L7.68 15.2823C7.77144 15.7734 8.02191 16.2145 8.38755 16.5285C8.75318 16.8424 9.2107 17.0092 9.68 16.9996L19.4 16.9996C19.8693 17.0092 20.3268 16.8424 20.6925 16.5285C21.0581 16.2145 21.3086 15.7734 21.4 15.2823L23 6.3332L6 6.3332" fill-rule="nonzero" stroke="rgb(69.2617,69.2617,69.2617)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+	</g>
+</svg>
