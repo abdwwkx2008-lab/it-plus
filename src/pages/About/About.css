@@ -1,0 +1,136 @@
+:root {
+  --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+  --text-main: #1d1d1f;
+  --text-secondary: #515154;
+  --accent: #ff3b30;
+  --card-bg: #ffffff;
+}
+
+.about-section {
+  padding-top: clamp(60px, 8vw, 100px);
+  background-color: #fbfbfd;
+  overflow: hidden;
+}
+
+.about-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 6vw, 60px);
+  align-items: flex-start;
+}
+
+/* Левая часть */
+.about-title {
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-main);
+  margin-bottom: clamp(20px, 4vw, 30px);
+  letter-spacing: -0.02em;
+}
+
+.about-span {
+  color: red;
+}
+
+.about-description p {
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 18px;
+}
+
+.about-description strong {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+/* Правая часть */
+.about-features-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.feature-card {
+  background: var(--card-bg);
+  padding: clamp(18px, 3vw, 28px);
+  border-radius: 24px;
+  border: 1px solid #e5e5e7;
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 3vw, 24px);
+  transition: all 0.3s ease;
+}
+
+.feature-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  transform: translateX(10px);
+}
+
+.feature-icon {
+  flex-shrink: 0;
+  width: clamp(42px, 5vw, 50px);
+  height: clamp(42px, 5vw, 50px);
+  background: #f5f5f7;
+  border-radius: 14px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-icon svg {
+  width: clamp(22px, 3vw, 28px);
+  height: clamp(22px, 3vw, 28px);
+}
+
+.feature-info h3 {
+  font-size: clamp(16px, 1.4vw, 18px);
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-main);
+}
+
+.feature-info p {
+  font-size: clamp(13px, 1.2vw, 14px);
+  line-height: 1.4;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .about-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card:hover {
+    transform: none;
+  }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+  .about-section {
+    padding-top: 48px;
+  }
+
+  .feature-card {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .feature-icon {
+    margin-bottom: 8px;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 360px) {
+  .about-title br {
+    display: none;
+  }
+}

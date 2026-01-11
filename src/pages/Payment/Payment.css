@@ -1,0 +1,277 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+.payment-page-section {
+    background-color: #fff;
+    min-height: 90vh;
+    padding: 64px 0;
+    font-family: 'Manrope', sans-serif;
+    color: #18181B;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-theme .payment-page-section {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.payment-layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 96px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    align-items: center;
+}
+
+.payment-instructions-column {
+    animation: content-slide-up 0.8s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+}
+
+.instructions-title {
+    font-size: 44px;
+    font-weight: 800;
+    margin: 0 0 16px 0;
+}
+
+.instructions-subtitle {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.7;
+    margin: 0 0 48px 0;
+    transition: color 0.3s ease;
+}
+
+body.dark-theme .instructions-subtitle {
+    color: var(--secondary-text-color);
+}
+
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.step-number {
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    background-color: #f4f4f5;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+body.dark-theme .step-number {
+    background-color: var(--button-secondary-bg);
+}
+
+.step-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+}
+
+.step-description {
+    color: #555;
+    line-height: 1.6;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+body.dark-theme .step-description {
+    color: var(--secondary-text-color);
+}
+
+.payment-details-column {
+    animation: card-pop-in 0.8s cubic-bezier(0.25, 1, 0.5, 1) 0.1s backwards;
+}
+
+.payment-details-card {
+    background: #fff;
+    border-radius: 24px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-theme .payment-details-card {
+    background: var(--card-bg);
+    border-color: var(--border-color);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.qr-display-wrapper {
+    padding: 20px 20px 0 20px;
+}
+
+.qr-display-wrapper img {
+    width: 100%;
+    max-width: 300px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 16px;
+}
+
+.recipient-info-block, .phone-info-block {
+    padding: 24px 32px;
+}
+
+.phone-info-block {
+    border-top: 1px solid #f0f0f0;
+    transition: border-color 0.3s ease;
+}
+
+body.dark-theme .phone-info-block {
+    border-top-color: var(--border-color);
+}
+
+.recipient-label, .phone-info-label {
+    font-size: 14px;
+    color: #777;
+    margin: 0 0 4px 0;
+    transition: color 0.3s ease;
+}
+
+body.dark-theme .recipient-label, body.dark-theme .phone-info-label {
+    color: var(--secondary-text-color);
+}
+
+.recipient-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.phone-number-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 12px 12px 12px 20px;
+    margin-top: 8px;
+    transition: background-color 0.3s ease;
+}
+
+body.dark-theme .phone-number-box {
+    background-color: var(--background-color);
+}
+
+.phone-number {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.copy-button {
+    height: 40px;
+    padding: 0 20px;
+    border-radius: 8px;
+    border: none;
+    background-color: #18181B;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+body.dark-theme .copy-button {
+    background-color: var(--button-primary-bg);
+    color: var(--button-primary-text);
+}
+
+.copy-button:hover {
+    background-color: #3f3f46;
+}
+
+.copy-button.copied {
+    background-color: #28a745;
+}
+
+@media (max-width: 992px) {
+    .payment-page-section {
+        padding: 48px 0;
+        align-items: flex-start;
+    }
+    .payment-layout-grid {
+        grid-template-columns: 1fr;
+        gap: 64px;
+    }
+    .payment-details-column {
+        order: -1;
+    }
+    .payment-instructions-column {
+        text-align: center;
+    }
+    .steps-container {
+        text-align: left;
+        max-width: 500px;
+        margin: 0 auto;
+    }
+    .instructions-title {
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .payment-layout-grid {
+        padding: 0 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-page-section {
+        padding: 32px 0;
+    }
+    .payment-layout-grid {
+        padding: 0 16px;
+        gap: 48px;
+    }
+    .instructions-title {
+        font-size: 32px;
+    }
+    .instructions-subtitle {
+        margin-bottom: 40px;
+    }
+    .steps-container {
+        gap: 32px;
+    }
+    .step-item {
+        gap: 16px;
+    }
+    .step-description {
+        font-size: 15px;
+    }
+    .recipient-info-block, .phone-info-block {
+        padding: 20px 24px;
+    }
+    .recipient-name {
+        font-size: 18px;
+    }
+    .phone-number-box {
+        padding: 8px 8px 8px 16px;
+    }
+    .phone-number {
+        font-size: 14px;
+    }
+    .copy-button {
+        height: 36px;
+        padding: 0 16px;
+        font-size: 14px;
+    }
+}

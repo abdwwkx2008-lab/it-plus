@@ -1,0 +1,359 @@
+:root {
+  --bg-color: #ffffff;
+  --bg-subtle: #fbfbfd;
+  --text-main: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --border-light: #e5e5e7;
+  --error: #ff3b30;
+  --success: #34c759;
+  --radius-lg: 28px;
+  --btn-gradient: linear-gradient(135deg, #7186e3 0%, #82bef0 100%);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pp-container {
+  background-color: var(--bg-color);
+  min-height: 100vh;
+  padding: 120px 24px 80px;
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+}
+
+.pp-content-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ГАЛЕРЕЯ - ВОЗВРАЩЕН СТАРЫЙ СТИЛЬ */
+.pp-visual-side {
+  position: relative;
+}
+
+.pp-main-display {
+  height: 500px; /* Вернул старую фиксированную высоту */
+  background: var(--bg-subtle);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.pp-main-display img {
+  max-width: 80%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.pp-nav-thumbs {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.pp-thumb-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 14px;
+  background: var(--bg-subtle);
+  cursor: pointer;
+  padding: 8px;
+  transition: var(--transition);
+  border: 1.5px solid transparent;
+  overflow: hidden; /* Чтобы картинка не вылазила */
+}
+
+/* ВАЖНО: Фикс для картинок в превью */
+.pp-thumb-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pp-thumb-wrapper.active {
+  border-color: #7186e3;
+  background: white;
+  box-shadow: 0 4px 12px rgba(113, 134, 227, 0.15);
+}
+
+/* ИНФОРМАЦИЯ */
+.pp-header-info { margin-bottom: 40px; }
+
+.pp-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.pp-category-label {
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  letter-spacing: 0.8px;
+}
+
+.pp-stock-status {
+  font-size: 11px;
+  font-weight: 400;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.pp-stock-status.ok { background: #f2fbf5; color: var(--success); }
+.pp-stock-status.none { background: #fdf2f2; color: var(--error); }
+
+.pp-main-name {
+  font-size: 38px;
+  font-weight: 400;
+  line-height: 1.1;
+  margin-bottom: 15px;
+  letter-spacing: -0.5px;
+}
+
+.pp-price-tag {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* КНОПКИ */
+.pp-cta-block {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 50px;
+  align-items: center;
+}
+
+.pp-main-action-gradient {
+  flex: 1;
+  height: 52px;
+  background: var(--btn-gradient);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: var(--transition);
+  box-shadow: 0 6px 18px rgba(113, 134, 227, 0.25);
+}
+
+.pp-main-action-gradient:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(113, 134, 227, 0.35);
+}
+
+.pp-cart-icon { width: 20px; height: 20px; }
+
+.pp-heart-action {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+/* ХАРАКТЕРИСТИКИ */
+.pp-tab-header {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.pp-specs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 40px;
+}
+.pp-condition-label {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+.pp-condition-label.new { background: #e3f2fd; color: #1976d2; }
+.pp-condition-label.used { background: #fff3e0; color: #f57c00; }
+
+.pp-battery-info {
+  font-size: 11px;
+  font-weight: 700;
+  color: #558b2f;
+  background: #f1f8e9;
+  padding: 4px 12px;
+  border-radius: 20px;
+}
+
+.pp-spec-card {
+  border-bottom: 1px solid #f2f2f7;
+  padding-bottom: 10px;
+}
+
+.pp-spec-key { font-size: 12px; color: var(--text-secondary); margin-bottom: 2px; display: block; }
+.pp-spec-val { font-size: 14px; font-weight: 600; }
+
+.pp-fade-in { animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- RESPONSIVE LOGIC --- */
+
+@media (max-width: 1200px) {
+  .pp-content-grid {
+    gap: 40px;
+    padding: 0 20px;
+  }
+  .pp-main-display {
+    height: 450px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .pp-container {
+    padding-top: 80px;
+  }
+  .pp-content-grid {
+    grid-template-columns: 1fr;
+    max-width: 800px;
+    gap: 40px;
+  }
+  .pp-visual-side {
+    max-width: 100%;
+  }
+  .pp-main-display {
+    height: 500px;
+  }
+  .pp-info-side {
+    padding-bottom: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .pp-container {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+  .pp-main-display {
+    height: 400px;
+    border-radius: 20px;
+  }
+  .pp-main-name {
+    font-size: 32px;
+  }
+  .pp-price-tag {
+    font-size: 26px;
+  }
+  .pp-nav-thumbs {
+    gap: 10px;
+  }
+  .pp-thumb-wrapper {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pp-container {
+    padding-top: 40px;
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .pp-main-display {
+    height: 320px;
+    margin-bottom: 16px;
+  }
+  .pp-main-display img {
+    max-width: 90%;
+    max-height: 90%;
+  }
+  .pp-meta {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pp-main-name {
+    font-size: 26px;
+    line-height: 1.2;
+  }
+  .pp-price-tag {
+    font-size: 24px;
+  }
+  .pp-cta-block {
+    flex-direction: row;
+    gap: 12px;
+    margin-bottom: 35px;
+  }
+  .pp-main-action-gradient {
+    height: 56px;
+    font-size: 15px;
+    border-radius: 14px;
+  }
+  .pp-heart-action {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+  }
+  .pp-specs-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .pp-spec-card {
+    padding-bottom: 8px;
+  }
+  .pp-nav-thumbs {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 4px 0 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .pp-thumb-wrapper {
+    flex: 0 0 60px;
+  }
+}
+
+@media (max-width: 360px) {
+  .pp-main-display {
+    height: 280px;
+  }
+  .pp-main-name {
+    font-size: 22px;
+  }
+  .pp-price-tag {
+    font-size: 22px;
+  }
+  .pp-category-label, 
+  .pp-condition-label, 
+  .pp-battery-info, 
+  .pp-stock-status {
+    font-size: 10px;
+    padding: 3px 10px;
+  }
+}
+
+/* --- ПЛАВНОСТЬ И ТАЧ-ИНТЕРФЕЙС --- */
+@media (hover: none) {
+  .pp-main-action-gradient:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+  }
+  .pp-thumb-wrapper:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Фикс для предотвращения горизонтального скролла */
+.pp-content-grid {
+  width: 100%;
+  overflow-x: hidden;
+}

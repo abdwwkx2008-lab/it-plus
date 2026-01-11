@@ -1,0 +1,212 @@
+/* --- Общие стили --- */
+.catalog-wrapper {
+  background-color: #f5f5f7;
+  min-height: 100vh;
+  padding: 40px 0;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.catalog-flex {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+/* --- Сайдбар Фильтров --- */
+.filters-card {
+  width: 280px;
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  position: sticky;
+  top: 20px;
+  flex-shrink: 0;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: #1d1d1f;
+}
+
+.filter-group {
+  margin-bottom: 24px;
+  border-bottom: 1px solid #f2f2f7;
+  padding-bottom: 16px;
+}
+
+.filter-label-main {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin-bottom: 12px;
+}
+
+/* Поля цены */
+.price-range-inputs {
+  display: flex;
+  align-items: center;
+  background: #f2f2f7;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.price-range-inputs input {
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 12px;
+  font-size: 14px;
+  outline: none;
+  color: #1d1d1f;
+}
+
+.price-divider {
+  width: 1px;
+  height: 24px;
+  background: #d2d2d7;
+}
+
+/* Чекбоксы iOS */
+.checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ios-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #424245;
+  transition: 0.2s;
+}
+
+.ios-checkbox-item input { display: none; }
+
+.ios-check-box {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #d2d2d7;
+  border-radius: 6px;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.ios-checkbox-item input:checked + .ios-check-box {
+  background: #0030b5;
+  border-color: #0030b5;
+}
+
+.ios-checkbox-item input:checked + .ios-check-box::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  left: 4px;
+  top: -1px;
+}
+
+/* --- Сетка товаров (ОСНОВНАЯ СТРУКТУРА) --- */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 24px;
+  flex: 1;
+  /* Заставляем карточки в одном ряду тянуться до одинаковой высоты */
+  align-items: stretch;
+}
+
+/* --- Состояния пустых опций --- */
+.ios-checkbox-item.empty-option {
+  opacity: 0.5;
+}
+
+.empty-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px;
+  background: #fff;
+  border-radius: 24px;
+}
+/* --- Empty state (нет товаров) --- */
+.no-products {
+  grid-column: 1 / -1;
+  min-height: 360px;
+  background: #ffffff;
+  border-radius: 28px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.05);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+  padding: 60px 40px;
+  animation: slideUp 0.5s ease;
+}
+
+.no-products h3 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1d1d1f;
+  margin-bottom: 12px;
+}
+
+.no-products p {
+  font-size: 15px;
+  color: #6e6e73;
+  max-width: 420px;
+  line-height: 1.5;
+}
+
+/* Иконка сверху (через псевдоэлемент) */
+.no-products::before {
+  content: "📦";
+  font-size: 48px;
+  margin-bottom: 20px;
+  display: block;
+  opacity: 0.9;
+}
+
+/* --- Адаптивность --- */
+@media (max-width: 480px) { .catalog-wrapper { padding: 20px 0; } .filters-card { border-radius: 20px; width: 100%; position: static; } .product-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } .product-card { min-height: 360px; } .product-image-wrapper { height: 160px; } .product-name { font-size: 14px; } .product-price { font-size: 18px; } } /* Телефоны */ @media (max-width: 768px) { .catalog-flex { flex-direction: column; } .filters-card { width: 100%; position: static; } .product-grid { grid-template-columns: repeat(2, 1fr); } .product-card { min-height: 380px; } .product-image-wrapper { height: 180px; } }
+
+/* 📱 планшеты */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* 💻 ноутбуки */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* 🖥 большие мониторы */
+@media (min-width: 1441px) and (max-width: 2560px) {
+  .product-grid { grid-template-columns: repeat(4, 1fr); }
+  .filters-card { width: 320px; }
+}
+
+/* 📺 TV / 4K */
+@media (min-width: 2561px) {
+  .product-grid { grid-template-columns: repeat(6, 1fr); }
+  .filters-card { width: 380px; }
+  .catalog-wrapper { padding: 80px 0; }
+}
+/* Анимация появления */
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.product-grid > * {
+  animation: slideUp 0.5s ease backwards;
+}

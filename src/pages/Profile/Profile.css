@@ -1,0 +1,243 @@
+/* Общая обертка */
+.profile-wrapper {
+  max-width: 1100px;
+  margin: 60px auto;
+  padding: 0 20px;
+  font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.main-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 40px;
+  color: #1a1a1a;
+}
+
+/* Сетка кабинета */
+.profile-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 35px;
+  align-items: start;
+}
+
+/* Сайдбар */
+.sidebar-menu {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+.menu-nav-item {
+  padding: 16px 20px;
+  font-size: 15px;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 4px solid transparent;
+  border-bottom: 1px solid #f9f9f9;
+}
+
+.menu-nav-item:hover {
+  background: #fcfcfc;
+  color: #000;
+}
+
+.menu-nav-item.active {
+  background: #f8faff;
+  color: #007bff;
+  font-weight: 600;
+  border-left-color: #007bff;
+}
+
+.logout-text {
+  color: #eb5757;
+  border-top: 1px solid #eee;
+}
+
+/* Область контента */
+.content-area {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 40px;
+  min-height: 500px;
+}
+
+.tab-content h2 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  color: #1a1a1a;
+}
+
+.welcome-text {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+/* Сетка в "Мой аккаунт" (3-й скриншот) */
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.grid-box {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+  cursor: pointer;
+  transition: 0.2s;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.grid-box:hover {
+  color: #007bff;
+}
+
+.grid-icon {
+  font-size: 20px;
+  margin-right: 15px;
+}
+
+/* Формы */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 15px;
+  background: #fafafa;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  background: #fff;
+}
+
+.disabled-input {
+  background: #f0f0f0 !important;
+  color: #888 !important;
+  cursor: not-allowed;
+}
+
+.input-hint {
+  color: #999;
+  font-size: 12px;
+  margin-top: 5px;
+  display: block;
+}
+
+.save-btn {
+  background: #1a1a1a;
+  color: #fff;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 10px;
+}
+
+.save-btn:hover {
+  background: #000;
+  transform: translateY(-1px);
+}
+
+/* Список заказов */
+.order-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.order-num { font-weight: 600; margin-right: 10px; }
+.order-date { color: #888; font-size: 14px; }
+.order-price { font-weight: 700; margin-right: 15px; }
+
+.status-pill {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+/* МОДАЛЬНОЕ ОКНО */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(3px);
+}
+
+.modal-window {
+  background: #fff;
+  width: 420px;
+  padding: 30px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+.modal-header { font-size: 20px; font-weight: 700; margin-bottom: 15px; }
+.modal-body { color: #555; margin-bottom: 30px; }
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-btn-cancel {
+  flex: 1;
+  background: #f1f1f1;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.modal-btn-exit {
+  flex: 1;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.empty-txt { color: #999; font-style: italic; }
+
+.animate-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

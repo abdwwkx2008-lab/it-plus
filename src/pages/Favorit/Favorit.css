@@ -1,0 +1,112 @@
+.favorit-page-wrapper {
+  padding: 40px 0 80px;
+}
+
+.favorit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.favorit-header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.page-main-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1d1d1f;
+}
+
+.items-count {
+  font-size: 15px;
+  color: #86868b;
+}
+
+.clear-favorites-btn {
+  background: transparent;
+  border: 1px solid #d2d2d7;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.clear-favorites-btn:hover {
+  background: #f5f5f7;
+}
+
+/* Сетка карточек — размеры НЕ меняем */
+.favorite-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+/* Empty state */
+.empty-page-state {
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-card {
+  text-align: center;
+  max-width: 420px;
+  padding: 40px 30px;
+  border-radius: 20px;
+  background: #fafafa;
+  border: 1px solid #f2f2f7;
+}
+
+.empty-icon {
+  font-size: 42px;
+  display: block;
+  margin-bottom: 14px;
+}
+
+.empty-card h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+  color: #1d1d1f;
+}
+
+.empty-card p {
+  font-size: 15px;
+  color: #86868b;
+  margin-bottom: 22px;
+}
+
+.apple-link-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7186e3 0%, #82bef0 100%);
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.apple-link-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+  .favorit-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .page-main-title {
+    font-size: 26px;
+  }
+}

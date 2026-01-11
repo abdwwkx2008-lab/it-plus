@@ -1,0 +1,78 @@
+.smart-swiper-section {
+    padding: 60px 0;
+    background-color: #f5f5f7; /* Светлый фон в стиле Apple */
+    overflow: hidden;
+}
+
+.smart-swiper-title {
+    font-size: 35px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    text-align: left;
+    color: #1d1d1f;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Ограничиваем ширину слайда, чтобы карточка не растягивалась на весь экран */
+.smart-slide {
+    width: 300px; /* Фиксированная ширина карточки в свайпере */
+    height: auto;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 20px; /* Место для тени при ховере */
+}
+
+/* Настройка кнопок навигации Swiper (синие под ваш градиент) */
+.smart-swiper-section .swiper-button-next,
+.smart-swiper-section .swiper-button-prev {
+    color: #7186e3;
+    background: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.smart-swiper-section .swiper-button-next:after,
+.smart-swiper-section .swiper-button-prev:after {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Блок с кнопкой внизу */
+.smart-bth-block {
+    display: flex;
+    justify-content: center;
+    
+}
+
+.smart-bth {
+    padding: 14px 35px;
+    background: var(--btn-gradient, linear-gradient(135deg, #7186e3 0%, #82bef0 100%));
+    color: white;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(113, 134, 227, 0.3);
+}
+
+.smart-bth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(113, 134, 227, 0.4);
+}
+
+.loader-container {
+    text-align: center;
+    padding: 100px;
+    font-size: 20px;
+    color: #86868b;
+}
+
+/* Чтобы Swiper не обрезал тени карточек при наведении */
+.swiper {
+    padding: 10px 5px 30px 5px !important;
+}

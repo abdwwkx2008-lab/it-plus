@@ -5,10 +5,13 @@ import { Link } from 'react-router-dom'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import { Navigation, Pagination, Autoplay } from 'swiper'
-import SwiperIMG1 from '../../../assets/banner-1.jpg'
-import SwiperIMG2 from '../../../assets/banner-1.jpg'
-import SwiperIMG3 from '../../../assets/banner-1.jpg'
+
+import { Navigation, Pagination, Autoplay } from 'swiper/modules'
+
+import SwiperIMG1 from '../../../assets/smart-swiper.png'
+import SwiperIMG2 from '../../../assets/remont-banner.png'
+import SwiperIMG3 from '../../../assets/nout-banner.png'
+
 function MySwiper() {
   const slideImages = [SwiperIMG1, SwiperIMG2, SwiperIMG3]
 

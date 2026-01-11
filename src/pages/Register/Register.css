@@ -1,0 +1,132 @@
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f8f9fa; /* Светлый фон как на скрине */
+    padding: 20px;
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+.auth-card {
+    background: white;
+    padding: 50px 40px;
+    border-radius: 30px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.05); /* Мягкая тень */
+    width: 100%;
+    max-width: 420px;
+    text-align: left; /* Текст слева как на скрине */
+}
+
+.auth-title {
+    font-size: 32px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #1d1d1f;
+    text-align: center;
+}
+
+.auth-subtitle {
+    font-size: 16px;
+    color: #86868b;
+    margin-bottom: 35px;
+    text-align: center;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #515154;
+    margin-bottom: 8px;
+    margin-left: 5px;
+}
+
+.auth-card input {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid #e5e5e7;
+    background: #fcfcfd;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+    color: #1d1d1f;
+}
+
+.auth-card input:focus {
+    outline: none;
+    border-color: #007aff;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+}
+
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.eye-button {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #c1c1c6;
+}
+
+.forgot-pass {
+    text-align: right;
+    font-size: 14px;
+    color: #007aff;
+    margin-top: 8px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.main-auth-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    border: none;
+    background: #1d1d1f; /* Темная кнопка как на скриншоте */
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 25px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.main-auth-btn:hover {
+    background: #000;
+}
+
+.main-auth-btn:active {
+    transform: scale(0.98);
+}
+
+.auth-footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 15px;
+    color: #86868b;
+}
+
+.auth-footer span {
+    color: #007aff;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 4px;
+}
+
+.auth-footer span:hover {
+    text-decoration: underline;
+}

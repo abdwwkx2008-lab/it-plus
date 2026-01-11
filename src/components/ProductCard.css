@@ -1,0 +1,217 @@
+:root {
+  --text-main: #1d1d1f;
+  --text-muted: #86868b;
+  --btn-gradient: linear-gradient(135deg, #7186e3 0%, #82bef0 100%);
+}
+
+.product-card {
+  background: #ffffff;
+  border-radius: 28px;
+  position: relative;
+  width: 100%;
+  /* Убираем фиксированный height, используем min-height для стабильности */
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  border: 1px solid #f2f2f7;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+
+.product-card-link {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-grow: 1;
+}
+
+/* Избранное */
+.product-card-favorite-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 10;
+  width: 26px;
+  height: 26px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  
+}
+
+/* Картинка */
+.product-image-wrapper {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px;
+}
+
+.product-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Инфо-блок */
+.product-info-wrapper {
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Растягивает блок, чтобы футер был внизу */
+}
+
+.product-meta-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.product-brand-name {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Название товара */
+.product-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  line-height: 1.3;
+  /* Ограничение 2 строки БЕЗ наложения */
+  min-height: 42px; 
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Линия тегов */
+.product-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.badge-tag {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+
+.color-tag { background: #ffab57; color: white; }
+.storage-tag { background: #f2f2f7; color: #86868b; }
+.battery-tag { background: #e8f5e9; color: #2e7d32; }
+
+/* Футер карточки */
+.product-card-footer {
+  margin-top: auto; /* Прижимает цену и кнопку к самому низу */
+}
+
+.product-price {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgb(28, 110, 28);
+  margin-bottom: 12px;
+}
+
+.product-card-add-btn-gradient {
+  width: 100%;
+  height: 46px;
+  background: var(--btn-gradient);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: 0.2s;
+}
+
+.product-card-add-btn-gradient:active {
+  transform: scale(0.96);
+}
+
+.cart-mini-icon {
+  width: 18px;
+  height: 18px;
+}
+
+
+
+
+@media (max-width: 360px) {
+  .product-image-wrapper { height: 160px; }
+  .product-name { font-size: 14px; }
+  .product-price { font-size: 18px; }
+}
+
+/* 📱 Телефоны */
+@media (max-width: 600px) {
+  .product-card { min-height: 380px; }
+  .product-image-wrapper { height: 180px; }
+}
+
+/* 📱➡️📲 Планшеты */
+@media (min-width: 601px) and (max-width: 1024px) {
+  .product-image-wrapper { height: 210px; }
+}
+
+/* 💻 Ноутбуки */
+@media (min-width: 1025px) and (max-width: 1440px) {
+  .product-image-wrapper { height: 220px; }
+}
+
+/* 🖥 Большие экраны */
+@media (min-width: 1441px) and (max-width: 2560px) {
+  .product-image-wrapper { height: 240px; }
+  .product-name { font-size: 17px; }
+}
+
+/* 📺 TV / 4K */
+@media (min-width: 2561px) {
+  .product-card {
+    min-height: 520px;
+    border-radius: 36px;
+  }
+
+  .product-image-wrapper {
+    height: 300px;
+  }
+
+  .product-name {
+    font-size: 20px;
+  }
+
+  .product-price {
+    font-size: 26px;
+  }
+
+  .product-card-add-btn-gradient {
+    height: 56px;
+    font-size: 18px;
+  }
+}
