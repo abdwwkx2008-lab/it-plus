@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import { CustomContext } from '../../store/store'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import './Cart.css'
 
 const Cart = () => {
@@ -14,27 +15,45 @@ const Cart = () => {
     clearCart,
     user,
   } = useContext(CustomContext)
+
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isSending, setIsSending] = useState(false)
+  const navigate = useNavigate()
 
   const deliveryLimit = 50000
+  const deliveryPrice = 500
   const remainsForFree = deliveryLimit - totalPrice
-  const finalPrice = totalPrice >= deliveryLimit ? totalPrice : totalPrice + 500
+  const finalPrice =
+    totalPrice >= deliveryLimit ? totalPrice : totalPrice + deliveryPrice
 
   const handleCheckout = async () => {
+    if (!user) {
+      toast.warning('Пожалуйста, войдите в аккаунт для оформления заказа')
+      navigate('/login')
+      return
+    }
+
     setIsSending(true)
+
     const customerData = {
-      name: user?.user_metadata?.full_name || 'Клиент',
+      name: user?.user_metadata?.full_name || 'Не указано',
       phone: user?.user_metadata?.phone || 'Не указан',
+      email: user?.email || '', // Добавляем email для полноты данных
     }
 
-    const success = await sendOrder(customerData)
+    try {
+      const success = await sendOrder(customerData)
 
-    if (success) {
-      setIsModalOpen(true)
-      clearCart()
+      if (success) {
+        setIsModalOpen(true)
+        clearCart()
+      }
+    } catch (error) {
+      toast.error('Ошибка при оформлении заказа')
+      console.error(error)
+    } finally {
+      setIsSending(false)
     }
-    setIsSending(false)
   }
 
   if (cart.length === 0 && !isModalOpen) {
@@ -44,6 +63,7 @@ const Cart = () => {
           <div className="empty-card">
             <span className="empty-icon">🛒</span>
             <h2>Корзина пуста</h2>
+            <p>Но это легко исправить!</p>
             <Link to="/catalog" className="apple-link-btn">
               В каталог
             </Link>
@@ -61,10 +81,9 @@ const Cart = () => {
           <div className="cart-items-list">
             {cart.map((item) => (
               <div key={item.id} className="cart-item-card">
-                {/* Исправили обертку картинки */}
                 <div className="item-img-wrapper">
                   <img
-                    src={item.images?.[0]}
+                    src={item.images?.[0] || 'https://via.placeholder.com/120'}
                     alt={item.title}
                     className="item-img"
                   />
@@ -112,9 +131,19 @@ const Cart = () => {
                 <span
                   className={totalPrice >= deliveryLimit ? 'free-text' : ''}
                 >
-                  {totalPrice >= deliveryLimit ? 'Бесплатно' : '500 ₽'}
+                  {totalPrice >= deliveryLimit
+                    ? 'Бесплатно'
+                    : `${deliveryPrice} ₽`}
                 </span>
               </div>
+
+              {totalPrice < deliveryLimit && (
+                <p className="delivery-hint">
+                  Добавьте товаров на{' '}
+                  <strong>{remainsForFree.toLocaleString()} ₽</strong> для
+                  бесплатной доставки
+                </p>
+              )}
 
               <hr className="summary-divider" />
 
@@ -128,7 +157,11 @@ const Cart = () => {
                 onClick={handleCheckout}
                 disabled={isSending}
               >
-                {isSending ? 'Отправка...' : 'Оформить заказ'}
+                {isSending
+                  ? 'Отправка...'
+                  : user
+                  ? 'Оформить заказ'
+                  : 'Войти и оформить'}
               </button>
             </div>
           </aside>
@@ -141,12 +174,26 @@ const Cart = () => {
             <div className="success-icon">✅</div>
             <h2>Заказ отправлен!</h2>
             <p>Мы свяжемся с вами в течение 10 минут для подтверждения.</p>
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="apple-link-btn"
-            >
-              Хорошо
-            </button>
+            <div className="modal-actions">
+              <button
+                onClick={() => {
+                  setIsModalOpen(false)
+                  navigate('/profile')
+                }}
+                className="apple-link-btn"
+              >
+                Посмотреть в профиле
+              </button>
+              <button
+                onClick={() => {
+                  setIsModalOpen(false)
+                  navigate('/')
+                }}
+                className="secondary-modal-btn"
+              >
+                На главную
+              </button>
+            </div>
           </div>
         </div>
       )}

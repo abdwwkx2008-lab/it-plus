@@ -241,3 +241,93 @@
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* =========================
+   📱 ПЛАНШЕТЫ (до 1024px)
+========================= */
+@media (max-width: 1024px) {
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-menu {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    border-radius: 12px;
+  }
+
+  .menu-nav-item {
+    flex: 0 0 auto;
+    border-left: none;
+    border-bottom: none;
+    border-right: 1px solid #f0f0f0;
+    white-space: nowrap;
+  }
+
+  .menu-nav-item.active {
+    border-right-color: #007bff;
+  }
+}
+
+/* =========================
+   📱 МОБИЛЬНЫЕ (до 600px)
+========================= */
+@media (max-width: 600px) {
+  .profile-wrapper {
+    margin: 30px auto;
+  }
+
+  .main-title {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .content-area {
+    padding: 24px;
+    min-height: auto;
+  }
+
+  .tab-content h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .account-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-box {
+    padding: 14px 0;
+  }
+
+  .order-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .order-meta {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .modal-window {
+    width: calc(100% - 40px);
+  }
+}
+
+/* =========================
+   📱 ОЧЕНЬ МАЛЕНЬКИЕ (до 360px)
+========================= */
+@media (max-width: 360px) {
+  .menu-nav-item {
+    font-size: 14px;
+    padding: 14px 16px;
+  }
+
+  .save-btn {
+    width: 100%;
+  }
+}

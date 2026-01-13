@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { supabase } from '../../supabaseClient'
+import React, { useState, useContext } from 'react' // Добавили useContext
+import { CustomContext } from '../../store/store' // Импортируем контекст
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import './Register.css'
@@ -12,30 +12,35 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
 
+  const { register } = useContext(CustomContext) // Берем функцию из стора
   const navigate = useNavigate()
 
   const handleRegister = async (e) => {
     e.preventDefault()
     setLoading(true)
 
-    const { data, error: sbError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          phone_number: phone,
-        },
-      },
-    })
+    try {
+      // Вызываем функцию из стора, которую мы написали в предыдущем шаге
+      const result = await register({
+        email,
+        password,
+        fullName,
+        phone,
+      })
 
-    if (sbError) {
-      toast.error(`Ошибка: ${sbError.message}`)
-    } else {
-      toast.success('Успешно! Добро пожаловать.')
-      navigate('/')
+      if (result.success) {
+        toast.success('Успешно! Добро пожаловать.')
+        navigate('/')
+      } else {
+        // Если в сторе произошла ошибка, она придет сюда в result.error
+        toast.error(result.error || 'Ошибка при регистрации')
+      }
+    } catch (err) {
+      toast.error('Произошла непредвиденная ошибка')
+      console.error(err)
+    } finally {
+      setLoading(false) // ВСЕГДА выключаем загрузку
     }
-    setLoading(false)
   }
 
   return (
@@ -87,6 +92,7 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                minLength={6}
               />
               <button
                 type="button"

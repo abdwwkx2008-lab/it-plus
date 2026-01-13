@@ -6,18 +6,19 @@ import { useNavigate } from 'react-router-dom'
 import './Profile.css'
 
 const Profile = () => {
-  const { user, setUser, clearCart } = useContext(CustomContext)
+  // 1. Добавили authLoading из контекста
+  const { user, setUser, clearCart, authLoading } = useContext(CustomContext)
   const [activeTab, setActiveTab] = useState('account')
+  const [isSaving, setIsSaving] = useState(false)
+  const [isPasswordChanging, setIsPasswordChanging] = useState(false)
   const navigate = useNavigate()
 
-  // Состояния для форм
   const [profileForm, setProfileForm] = useState({
-    full_name: user?.full_name || '',
-    phone: user?.phone || '',
+    full_name: '',
+    phone: '',
   })
 
   const [passwordForm, setPasswordForm] = useState({
-    oldPassword: '',
     newPassword: '',
     confirmPassword: '',
   })
@@ -25,7 +26,45 @@ const Profile = () => {
   const [orders, setOrders] = useState([])
   const [isLogoutModal, setIsLogoutModal] = useState(false)
 
-  // Подгружаем заказы только когда открыта вкладка "История заказов"
+  // 2. ЭКРАН ЗАГРУЗКИ: Если данные авторизации еще проверяются базой
+  if (authLoading) {
+    return (
+      <div className="profile-loading">
+        <div className="loader"></div>
+        <p>Загрузка профиля...</p>
+      </div>
+    )
+  }
+
+  // 3. ПРОВЕРКА ДОСТУПА: Если загрузка завершена, а пользователя нет
+  if (!user) {
+    return (
+      <div
+        className="profile-wrapper animate-in"
+        style={{ textAlign: 'center', paddingTop: '100px' }}
+      >
+        <h2 className="welcome-text">Вы не авторизованы</h2>
+        <p>Пожалуйста, войдите в систему, чтобы просмотреть профиль.</p>
+        <button
+          className="save-btn"
+          style={{ width: '200px', marginTop: '20px' }}
+          onClick={() => navigate('/login')}
+        >
+          Войти
+        </button>
+      </div>
+    )
+  }
+
+  useEffect(() => {
+    if (user) {
+      setProfileForm({
+        full_name: user.full_name || user.user_metadata?.full_name || '',
+        phone: user.phone || user.user_metadata?.phone || '',
+      })
+    }
+  }, [user])
+
   useEffect(() => {
     if (activeTab === 'orders' && user?.id) {
       const fetchOrders = async () => {
@@ -35,31 +74,64 @@ const Profile = () => {
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
 
-        if (!error) setOrders(data || [])
+        if (!error) {
+          setOrders(data || [])
+        }
       }
       fetchOrders()
     }
   }, [activeTab, user?.id])
 
-  // Логика обновления профиля
   const updateProfile = async (e) => {
     e.preventDefault()
-    const { error } = await supabase
-      .from('profiles')
-      .update({ full_name: profileForm.full_name, phone: profileForm.phone })
-      .eq('id', user.id)
+    if (!user?.id) return
 
-    if (error) {
+    setIsSaving(true)
+    try {
+      // 1. Обновляем метаданные в Auth (для сессии)
+      const { data: authData, error: authError } =
+        await supabase.auth.updateUser({
+          data: {
+            full_name: profileForm.full_name,
+            phone: profileForm.phone,
+          },
+        })
+
+      if (authError) throw authError
+
+      // 2. Обновляем таблицу profiles (для базы)
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          full_name: profileForm.full_name,
+          phone: profileForm.phone,
+        })
+        .eq('id', user.id)
+
+      if (profileError) throw profileError
+
+      // 3. ВАЖНО: Обновляем стейт вручную, включая user_metadata
+      setUser({
+        ...user,
+        ...profileForm,
+        user_metadata: {
+          ...user.user_metadata,
+          full_name: profileForm.full_name,
+          phone: profileForm.phone,
+        },
+      })
+
+      toast.success('Данные профиля успешно обновлены')
+    } catch (error) {
       toast.error('Ошибка обновления: ' + error.message)
-    } else {
-      setUser({ ...user, ...profileForm })
-      toast.success('👉 Данные профиля успешно обновлены')
+    } finally {
+      setIsSaving(false)
     }
   }
 
-  // Логика смены пароля
   const updatePassword = async (e) => {
     e.preventDefault()
+
     if (passwordForm.newPassword.length < 6) {
       return toast.error('Новый пароль должен быть не менее 6 символов')
     }
@@ -67,26 +139,35 @@ const Profile = () => {
       return toast.error('Пароли не совпадают')
     }
 
-    const { error } = await supabase.auth.updateUser({
-      password: passwordForm.newPassword,
-    })
+    setIsPasswordChanging(true)
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: passwordForm.newPassword,
+      })
 
-    if (error) {
+      if (error) throw error
+
+      toast.success('Пароль успешно изменён')
+      setPasswordForm({ newPassword: '', confirmPassword: '' })
+    } catch (error) {
       toast.error('Ошибка: ' + error.message)
-    } else {
-      toast.success('👉 Пароль успешно изменён')
-      setPasswordForm({ oldPassword: '', newPassword: '', confirmPassword: '' })
+    } finally {
+      setIsPasswordChanging(false)
     }
   }
 
-  // Логика выхода
   const handleLogout = async () => {
-    await supabase.auth.signOut()
-    localStorage.clear()
-    if (clearCart) clearCart()
-    setUser(null)
-    navigate('/login')
-    toast.info('Вы вышли из системы')
+    try {
+      await supabase.auth.signOut()
+      localStorage.removeItem('cart')
+      localStorage.removeItem('favorites')
+      if (clearCart) clearCart()
+      setUser(null)
+      navigate('/login')
+      toast.info('Вы вышли из системы')
+    } catch (error) {
+      toast.error('Ошибка при выходе')
+    }
   }
 
   return (
@@ -94,7 +175,6 @@ const Profile = () => {
       <h1 className="main-title">ЛИЧНЫЙ КАБИНЕТ</h1>
 
       <div className="profile-layout">
-        {/* ЛЕВОЕ МЕНЮ */}
         <aside className="sidebar-menu">
           <div
             className={`menu-nav-item ${
@@ -134,13 +214,15 @@ const Profile = () => {
           </div>
         </aside>
 
-        {/* КОНТЕНТНАЯ ЧАСТЬ */}
         <main className="content-area">
-          {/* ВКЛАДКА: МОЙ АККАУНТ */}
           {activeTab === 'account' && (
             <div className="tab-content">
               <h2 className="welcome-text">
-                Приветствуем, {user?.full_name || 'Пользователь'} !
+                Приветствуем,{' '}
+                {user?.full_name ||
+                  user?.user_metadata?.full_name ||
+                  'Пользователь'}
+                !
               </h2>
 
               <div className="account-grid">
@@ -176,13 +258,24 @@ const Profile = () => {
               </div>
 
               <div className="recent-orders">
-                <h3>Последние заказы</h3>
-                <p className="empty-txt">У вас пока нет заказов.</p>
+                <h3>Информация об аккаунте</h3>
+                <p>
+                  <strong>Email:</strong> {user?.email}
+                </p>
+                <p>
+                  <strong>Имя:</strong>{' '}
+                  {user?.full_name ||
+                    user?.user_metadata?.full_name ||
+                    'Не указано'}
+                </p>
+                <p>
+                  <strong>Телефон:</strong>{' '}
+                  {user?.phone || user?.user_metadata?.phone || 'Не указано'}
+                </p>
               </div>
             </div>
           )}
 
-          {/* ВКЛАДКА: РЕДАКТИРОВАНИЕ */}
           {activeTab === 'edit' && (
             <form className="tab-content" onSubmit={updateProfile}>
               <h2>Редактировать профиль</h2>
@@ -198,6 +291,7 @@ const Profile = () => {
                     })
                   }
                   placeholder="Введите ваше имя"
+                  required
                 />
               </div>
               <div className="form-group">
@@ -221,30 +315,15 @@ const Profile = () => {
                   placeholder="Номер телефона"
                 />
               </div>
-              <button type="submit" className="save-btn">
-                Сохранить изменения
+              <button type="submit" className="save-btn" disabled={isSaving}>
+                {isSaving ? 'Сохранение...' : 'Сохранить изменения'}
               </button>
             </form>
           )}
 
-          {/* ВКЛАДКА: ПАРОЛЬ */}
           {activeTab === 'password' && (
             <form className="tab-content" onSubmit={updatePassword}>
               <h2>Смена пароля</h2>
-              <div className="form-group">
-                <label>Старый пароль</label>
-                <input
-                  type="password"
-                  required
-                  value={passwordForm.oldPassword}
-                  onChange={(e) =>
-                    setPasswordForm({
-                      ...passwordForm,
-                      oldPassword: e.target.value,
-                    })
-                  }
-                />
-              </div>
               <div className="form-group">
                 <label>Новый пароль</label>
                 <input
@@ -257,6 +336,7 @@ const Profile = () => {
                       newPassword: e.target.value,
                     })
                   }
+                  minLength={6}
                 />
               </div>
               <div className="form-group">
@@ -271,15 +351,19 @@ const Profile = () => {
                       confirmPassword: e.target.value,
                     })
                   }
+                  minLength={6}
                 />
               </div>
-              <button type="submit" className="save-btn">
-                Сохранить
+              <button
+                type="submit"
+                className="save-btn"
+                disabled={isPasswordChanging}
+              >
+                {isPasswordChanging ? 'Обновление...' : 'Сохранить'}
               </button>
             </form>
           )}
 
-          {/* ВКЛАДКА: ЗАКАЗЫ */}
           {activeTab === 'orders' && (
             <div className="tab-content">
               <h2>История заказов</h2>
@@ -303,7 +387,9 @@ const Profile = () => {
                             {order.total_price.toLocaleString()} ₽
                           </span>
                           <span className={`status-pill ${order.status}`}>
-                            {order.status}
+                            {order.status === 'pending'
+                              ? 'В ожидании'
+                              : order.status}
                           </span>
                         </div>
                       </div>
@@ -316,7 +402,6 @@ const Profile = () => {
         </main>
       </div>
 
-      {/* МОДАЛКА ВЫХОДА (Apple Style) */}
       {isLogoutModal && (
         <div className="modal-overlay" onClick={() => setIsLogoutModal(false)}>
           <div className="modal-window" onClick={(e) => e.stopPropagation()}>

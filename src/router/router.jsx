@@ -12,55 +12,49 @@ import Contacts from '../pages/Contacts/Contacts'
 import About from '../pages/About/About'
 import SmartSwiper from '../pages/Home/SmartSwiper/SmartSwiper'
 import Profile from '../pages/Profile/Profile'
-
-// 1. Импортируем твой компонент защиты
 import PrivateRoute from '../components/PrivateRoute/PrivateRoute'
 import Payment from '../pages/Payment/Payment'
 import Delivery from '../pages/Delivery/Delivery'
 import FAQ from '../pages/FAQ/FAQ'
 import Repair from '../pages/Repair/Repair'
+
 const router = createBrowserRouter([
   {
-    element: <Layout />,
     path: '/',
+    element: <Layout />,
     children: [
-      { element: <Home />, path: '' },
-      { element: <Catalog />, path: 'catalog' },
-      { element: <Favorit />, path: 'favorit' },
-      { element: <Cart />, path: 'cart' },
-      { element: <Contacts />, path: 'contacts' },
-      { element: <About />, path: 'about' },
-      { element: <ProductPage />, path: 'product/:id' },
-      { element: <SmartSwiper />, path: 'smartswiper' },
-      { element: <Payment />, path: 'payment' },
-      { element: <Delivery />, path: 'delivery' },
-      { element: <FAQ />, path: 'faq' },
-      { element: <Repair />, path: 'repair' },
-
-      // 2. Оборачиваем Profile в PrivateRoute
+      { path: '', element: <Home /> },
+      { path: 'catalog', element: <Catalog /> },
+      { path: 'favorit', element: <Favorit /> },
+      { path: 'cart', element: <Cart /> },
+      { path: 'contacts', element: <Contacts /> },
+      { path: 'about', element: <About /> },
+      { path: 'product/:id', element: <ProductPage /> },
+      { path: 'smartswiper', element: <SmartSwiper /> },
+      { path: 'payment', element: <Payment /> },
+      { path: 'delivery', element: <Delivery /> },
+      { path: 'faq', element: <FAQ /> },
+      { path: 'repair', element: <Repair /> },
       {
+        path: 'profile',
         element: (
           <PrivateRoute>
             <Profile />
           </PrivateRoute>
         ),
-        path: 'profile',
       },
     ],
   },
-
-  // Если хочешь защитить и админку, можешь обернуть её так же
   {
+    path: '/admin',
     element: (
       <PrivateRoute>
         <Admin />
       </PrivateRoute>
     ),
-    path: 'admin',
   },
-
-  { element: <Login />, path: 'login' },
-  { element: <Register />, path: 'register' },
+  { path: '/login', element: <Login /> },
+  { path: '/register', element: <Register /> },
 ])
 
 export default router

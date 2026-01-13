@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
-import { supabase } from '../../supabaseClient'
+import React, { useState, useContext } from 'react' // Добавили useContext
+import { CustomContext } from '../../store/store' // Импортируем контекст
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import '../Register/Register.css'
 
 const Login = () => {
@@ -8,23 +9,29 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const { login } = useContext(CustomContext) // Берем функцию из стора
   const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
 
-    const { error: sbError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      const result = await login(email, password)
 
-    if (sbError) {
-      alert('Неверный email или пароль')
-    } else {
-      navigate('/')
+      if (result.success) {
+        toast.success('С возвращением!')
+        navigate('/')
+      } else {
+        toast.error(result.error || 'Неверный email или пароль')
+      }
+    } catch (err) {
+      toast.error('Произошла ошибка при входе')
+      console.error(err)
+    } finally {
+      setLoading(false) // Кнопка отлипнет в любом случае
     }
-    setLoading(false)
   }
 
   return (
@@ -65,7 +72,9 @@ const Login = () => {
             </div>
             <div
               className="forgot-pass"
-              onClick={() => alert('Функция в разработке')}
+              onClick={() =>
+                toast.info('Функция восстановления пароля в разработке')
+              }
             >
               Забыли пароль?
             </div>

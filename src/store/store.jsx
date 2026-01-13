@@ -4,30 +4,49 @@ import { toast } from 'react-toastify'
 
 export const CustomContext = createContext()
 
-// 2. Основной компонент
 export const Context = ({ children }) => {
-  const [user, setUser] = useState(null)
+  // 1. УЛУЧШЕННЫЙ LOCAL STORAGE (Lazy Initialization - данные подгружаются мгновенно)
+  const [cart, setCart] = useState(() => {
+    const saved = localStorage.getItem('cart')
+    return saved ? JSON.parse(saved) : []
+  })
+
+  const [favorites, setFavorites] = useState(() => {
+    const saved = localStorage.getItem('favorites')
+    return saved ? JSON.parse(saved) : []
+  })
+
+  // Кэшируем юзера, чтобы профиль не "прыгал" при перезагрузке страницы
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('cached_user')
+    return saved ? JSON.parse(saved) : null
+  })
+
   const [products, setProducts] = useState([])
   const [productsLoading, setProductsLoading] = useState(true)
   const [authLoading, setAuthLoading] = useState(true)
-  const [cart, setCart] = useState([])
-  const [favorites, setFavorites] = useState([])
-
-  const fetchProducts = async () => {
-    console.log('🚀 ЗАПРОС В SUPABASE')
-
-    const { data, error } = await supabase.from('products').select('*')
-
-    console.log('📦 DATA:', data)
-    console.log('❌ ERROR:', error)
-
-    if (!error) {
-      setProducts(data || [])
-    }
-  }
 
   // =========================
-  // ЗАГРУЗКА ПРОФИЛЯ
+  // АВТОМАТИЧЕСКОЕ СОХРАНЕНИЕ В ПАМЯТЬ (При любом изменении)
+  // =========================
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart))
+  }, [cart])
+
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites))
+  }, [favorites])
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('cached_user', JSON.stringify(user))
+    } else {
+      localStorage.removeItem('cached_user')
+    }
+  }, [user])
+
+  // =========================
+  // ЗАГРУЗКА ПОЛНОГО ПРОФИЛЯ (С приоритетом таблицы profiles)
   // =========================
   const fetchFullUser = useCallback(async (authUser) => {
     if (!authUser) return null
@@ -39,91 +58,134 @@ export const Context = ({ children }) => {
         .maybeSingle()
 
       if (error) throw error
-      return profile ? { ...authUser, ...profile } : authUser
+
+      return {
+        ...authUser,
+        ...profile,
+        full_name: profile?.full_name || authUser.user_metadata?.full_name,
+        phone: profile?.phone || authUser.user_metadata?.phone,
+      }
     } catch (e) {
-      console.error('Profile error:', e.message)
+      console.error('Profile fetch error:', e.message)
       return authUser
     }
   }, [])
 
   // =========================
-  // 1️⃣ ЗАГРУЗКА ТОВАРОВ (НЕ ЗАВИСИТ ОТ AUTH)
+  // АВТОРИЗАЦИЯ И СЛУШАТЕЛЬ СОСТОЯНИЯ
   // =========================
   useEffect(() => {
-    console.log('🚀 ЗАГРУЗКА ТОВАРОВ ЗАПУЩЕНА!') // Это МЫ ДОЛЖНЫ УВИДЕТЬ В КОНСОЛИ
+    let isMounted = true
 
+    const initAuth = async () => {
+      setAuthLoading(true)
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+
+      if (session?.user && isMounted) {
+        const fullUser = await fetchFullUser(session.user)
+        if (isMounted) setUser(fullUser)
+      }
+      if (isMounted) setAuthLoading(false)
+    }
+
+    initAuth()
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user && isMounted) {
+        const fullUser = await fetchFullUser(session.user)
+        if (isMounted) setUser(fullUser)
+      } else if (event === 'SIGNED_OUT') {
+        if (isMounted) {
+          setUser(null)
+          setCart([])
+          setFavorites([])
+          localStorage.removeItem('cached_user')
+          localStorage.removeItem('cart')
+          localStorage.removeItem('favorites')
+        }
+      }
+      if (isMounted) setAuthLoading(false)
+    })
+
+    return () => {
+      isMounted = false
+      subscription.unsubscribe()
+    }
+  }, [fetchFullUser])
+
+  // =========================
+  // ЗАГРУЗКА ТОВАРОВ ИЗ БАЗЫ
+  // =========================
+  useEffect(() => {
     const loadProducts = async () => {
       try {
         const { data, error } = await supabase.from('products').select('*')
-
-        if (error) {
-          console.error('❌ Ошибка базы:', error.message)
-        } else {
-          console.log('✅ Товаров получено:', data?.length)
-          setProducts(data || [])
-        }
+        if (error) throw error
+        setProducts(data || [])
       } catch (err) {
-        console.error('❌ Сбой JS:', err)
+        console.error('❌ Ошибка базы:', err.message)
       } finally {
         setProductsLoading(false)
       }
     }
-
     loadProducts()
   }, [])
-  // =========================
-  // 2️⃣ АВТОРИЗАЦИЯ (ОТДЕЛЬНО)
-  // =========================
-  useEffect(() => {
-    const loadAuth = async () => {
-      const { data } = await supabase.auth.getSession()
 
-      if (data.session?.user) {
-        const fullUser = await fetchFullUser(data.session.user)
-        setUser(fullUser)
-      }
-
-      setAuthLoading(false) // ✅ ИСПРАВЛЕНО
+  // =========================
+  // РЕГИСТРАЦИЯ И ВХОД
+  // =========================
+  const register = async ({ email, password, fullName, phone }) => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name: fullName, phone: phone },
+        },
+      })
+      if (error) throw error
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: error.message }
     }
+  }
 
-    loadAuth()
+  const login = async (email, password) => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+      if (error) throw error
+      return { success: true }
+    } catch (error) {
+      return { success: false, error: error.message }
+    }
+  }
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (session?.user) {
-        const fullUser = await fetchFullUser(session.user)
-        setUser(fullUser)
-      } else {
-        setUser(null)
-      }
-    })
-
-    return () => subscription.unsubscribe()
-  }, [fetchFullUser])
-
-  // =========================
-  // LOCAL STORAGE
-  // =========================
-  useEffect(() => {
-    const savedCart = localStorage.getItem('cart')
-    const savedFavs = localStorage.getItem('favorites')
-    if (savedCart) setCart(JSON.parse(savedCart))
-    if (savedFavs) setFavorites(JSON.parse(savedFavs))
-  }, [])
-
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart))
-  }, [cart])
-
-  useEffect(() => {
-    localStorage.setItem('favorites', JSON.stringify(favorites))
-  }, [favorites])
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut()
+      setUser(null)
+      setCart([])
+      setFavorites([])
+      toast.info('Вы вышли из аккаунта')
+    } catch (error) {
+      console.error('Logout error:', error.message)
+    }
+  }
 
   // =========================
-  // CART
+  // ЛОГИКА КОРЗИНЫ
   // =========================
   const addToCart = (product) => {
+    if (!user) {
+      return toast.warning('Войдите в аккаунт, чтобы добавить товар в корзину')
+    }
     setCart((prev) => {
       const exists = prev.find((item) => item.id === product.id)
       if (exists) {
@@ -163,9 +225,12 @@ export const Context = ({ children }) => {
   )
 
   // =========================
-  // FAVORITES
+  // ИЗБРАННОЕ
   // =========================
   const toggleFavorite = (p) => {
+    if (!user) {
+      return toast.warning('Войдите в аккаунт, чтобы сохранять избранное')
+    }
     const isFav = favorites.some((f) => f.id === p.id)
     if (isFav) {
       setFavorites((prev) => prev.filter((f) => f.id !== p.id))
@@ -177,52 +242,64 @@ export const Context = ({ children }) => {
   }
 
   // =========================
-  // ОТПРАВКА ЗАКАЗА (БЕЗ ИЗМЕНЕНИЙ)
+  // ОФОРМЛЕНИЕ ЗАКАЗА (СОХРАНЕНО ВСЁ ПОЛНОСТЬЮ)
   // =========================
   const sendOrder = async (info) => {
-    let orderId = 'Гость'
+    if (!user) {
+      toast.error(
+        'Ошибка: только авторизованные пользователи могут делать заказы'
+      )
+      return false
+    }
+
+    let orderId = 'Ошибка'
     const BOT_TOKEN = '8453282894:AAGNBL6RZrKVkdJCCU0RwStBwdrifFDDlnM'
     const CHAT_ID = '1722434856'
 
     try {
-      const { data, error } = await supabase
+      // 1. Сохранение в БД (Supabase)
+      const { data, error: orderError } = await supabase
         .from('orders')
         .insert([
           {
-            user_id: user?.id || null,
+            user_id: user.id,
             total_price: totalPrice,
             status: 'pending',
             customer_name: info.name,
             customer_phone: info.phone,
-            customer_email: info.email || '',
+            customer_email: info.email || user.email || '',
           },
         ])
         .select()
 
-      if (!error && data.length > 0) {
+      if (orderError) throw orderError
+
+      if (data && data.length > 0) {
         orderId = data[0].id
         const items = cart.map((item) => ({
           order_id: orderId,
           product_id: item.id,
           quantity: item.quantity,
-          price: item.price,
+          price_at_purchase: item.price,
         }))
-        await supabase.from('order_items').insert(items)
+        const { error: itemsError } = await supabase
+          .from('order_items')
+          .insert(items)
+        if (itemsError) throw itemsError
       }
-    } catch (e) {
-      console.error('DB Error:', e)
-    }
 
-    const media = cart
-      .map((item) => ({
-        type: 'photo',
-        media: item.images?.[0] || 'https://via.placeholder.com/300',
-        caption:
-          item.id === cart[0].id ? `📸 Фото товаров к заказу #${orderId}` : '',
-      }))
-      .slice(0, 10)
+      // 2. Подготовка Media Group для Telegram (Картинки)
+      const media = cart
+        .map((item) => ({
+          type: 'photo',
+          media: item.images?.[0] || 'https://via.placeholder.com/300',
+          caption:
+            item.id === cart[0].id
+              ? `📸 Фото товаров к заказу #${orderId.slice(0, 8)}`
+              : '',
+        }))
+        .slice(0, 10)
 
-    try {
       if (media.length > 0) {
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMediaGroup`, {
           method: 'POST',
@@ -231,28 +308,27 @@ export const Context = ({ children }) => {
         })
       }
 
+      // 3. Подготовка детального текста сообщения
       let orderList = cart
         .map(
-          (item, index) => `${index + 1}. <b>${item.brand} ${item.title}</b>
-- Цена: ${item.price}₽
-- Кол-во: ${item.quantity} шт.
-- Память: ${item.specs?.storage || '—'}
-- Цвет: ${item.specs?.color || '—'}
-- Состояние: ${item.condition === 'used' ? 'Б/У' : 'Новый'}
-${item.battery_health ? `- АКБ: ${item.battery_health}%` : ''}`
+          (item, index) =>
+            `${index + 1}. <b>${item.brand} ${item.title}</b>\n` +
+            `- Цена: ${item.price}₽\n` +
+            `- Кол-во: ${item.quantity} шт.\n` +
+            `- Память: ${item.specs?.storage || '—'}\n` +
+            `- Цвет: ${item.specs?.color || '—'}\n` +
+            `- Состояние: ${item.condition === 'used' ? 'Б/У' : 'Новый'}\n` +
+            `${item.battery_health ? `- АКБ: ${item.battery_health}%` : ''}`
         )
         .join('\n\n')
 
-      const text = `📦 <b>НОВЫЙ ЗАКАЗ #${orderId}</b>
-
-👤 <b>Клиент:</b> ${info.name}
-📞 <b>Телефон:</b> <code>${info.phone}</code>
-📧 <b>Email:</b> ${info.email || 'не указан'}
-
-🛒 <b>Состав заказа:</b>
-${orderList}
-
-💰 <b>ИТОГО: ${totalPrice.toLocaleString()}₽</b>`
+      const text =
+        `📦 <b>НОВЫЙ ЗАКАЗ #${orderId.slice(0, 8)}</b>\n\n` +
+        `👤 <b>Клиент:</b> ${info.name}\n` +
+        `📞 <b>Телефон:</b> <code>${info.phone}</code>\n` +
+        `📧 <b>Email:</b> ${info.email || user.email || 'не указан'}\n\n` +
+        `🛒 <b>Состав заказа:</b>\n${orderList}\n\n` +
+        `💰 <b>ИТОГО: ${totalPrice.toLocaleString()}₽</b>`
 
       const resText = await fetch(
         `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,
@@ -273,33 +349,29 @@ ${orderList}
         return true
       }
     } catch (e) {
-      console.error('TG Error:', e)
-      toast.error('Ошибка отправки в Telegram')
+      console.error('Order Error:', e)
+      toast.error('Ошибка при оформлении заказа')
       return false
     }
   }
 
-  // =========================
-  // PROVIDER
-  // =========================
   const value = {
     user,
     setUser,
-
+    register,
+    login,
+    logout,
     products,
-    productsLoading, // ✅ ИСПРАВЛЕНО
-    authLoading, // ✅ ИСПРАВЛЕНО
-
+    productsLoading,
+    authLoading,
     cart,
     addToCart,
     minusOne,
     removeFromCart,
     clearCart,
     totalPrice,
-
     favorites,
     toggleFavorite,
-
     sendOrder,
   }
 

@@ -100,13 +100,58 @@
 }
 
 /* Адаптив */
-@media (max-width: 768px) {
-  .favorit-header {
-    flex-direction: column;
-    align-items: flex-start;
+@media (max-width: 480px) {
+  .favorite-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .favorit-page-wrapper {
+    padding: 24px 0 60px;
   }
 
   .page-main-title {
-    font-size: 26px;
+    font-size: 22px;
+  }
+
+  .items-count {
+    font-size: 14px;
+  }
+}
+
+/* =========================
+   📱 ОЧЕНЬ МАЛЕНЬКИЕ (до 360px)
+   1 товар в ряд
+========================= */
+@media (max-width: 360px) {
+  .favorite-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   📱📱 ПЛАНШЕТЫ (481px – 768px)
+   3 товара в ряд
+========================= */
+@media (min-width: 481px) and (max-width: 768px) {
+  .favorite-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* =========================
+   🧾 EMPTY STATE АДАПТИВ
+========================= */
+@media (max-width: 480px) {
+  .empty-card {
+    padding: 28px 20px;
+  }
+
+  .empty-card h2 {
+    font-size: 20px;
+  }
+
+  .empty-card p {
+    font-size: 14px;
   }
 }
